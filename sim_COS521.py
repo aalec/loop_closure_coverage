@@ -15,12 +15,12 @@ def primesfrom2to(n): #Prime number generator for hash
     return np.r_[2,3,((3*np.nonzero(sieve)[0][1:]+1)|1)]
 
 def init(params):
-    params["block_length"] = 4
+    params["block_length"] = 0
     params["x_blocks"] = 20
     params["y_blocks"] = 20
     params["x_size"] = (params["block_length"]+1)*params["x_blocks"] + 1
     params["y_size"] = (params["block_length"]+1)*params["y_blocks"] + 1
-    params["window_size"] = 15
+    params["window_size"] = 5
     params["cursors"] = [">", "∧", "<", "v"] #right, up, left, down
     params["print"] = 1
 
@@ -96,14 +96,14 @@ def utils(board, params):
         row += "Rightmost: " + str(params["max_right"]) + "; "
         row += "Upmost: " + str(params["max_up"]) + "; "
         row += "Downmost: " + str(params["max_down"]) + "."
-        #win.addstr((2*params["window_size"]+3),0,row)
+        win.addstr((2*params["window_size"]+3),0,row)
     params["x_size_guess"] = (params["max_right"] - params["max_left"])/(params["block_length"] + 1)
     params["y_size_guess"] = (params["max_down"] - params["max_up"])/(params["block_length"] + 1)
 
     #checking coverage of board
     params["coverage_board"][x][y] = 1
     params["coverage"] = np.int32(np.sum(params["coverage_board"]))
-    tru_cov = params["coverage"]/(params["x_blocks"]*params["y_blocks"])
+    tru_cov = params["coverage"]/((params["x_blocks"]+1)*(params["y_blocks"]+1))
     if params["print"] == 1:
         row = "True Coverage: " + str(tru_cov)
         win.addstr((2*params["window_size"]),0,"    "+row + "                   ")
@@ -160,7 +160,7 @@ def run_sim(board, params): #The movement loop
     print_board(board, params)
     for i in range(200000):
         for j in range(params["block_length"] + 1):
-            time.sleep(0.1)
+            time.sleep(0.01)
             move(board, params)
             if params["print"] == 1: print_board(board, params)
 
